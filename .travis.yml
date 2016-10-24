@@ -7,7 +7,7 @@ env:
  - DOCKER_IMAGE=nginx-rtmp
 
 script:
-  - docker build -t ${DOCKER_IMAGE}
+  - docker build -t ${DOCKER_IMAGE} .
 
 after_script:
   - docker images
