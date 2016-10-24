@@ -7,6 +7,10 @@ default settings for HLS live streaming. Built on Alpine Linux.
 * ffmpeg 3.0.2 (compiled from source)
 * Default HLS settings (See: [nginx.conf](nginx.conf))
 
+[![Docker Stars](https://img.shields.io/docker/stars/alfg/nginx-rtmp.svg)]()
+[![Docker Pulls](https://img.shields.io/docker/pulls/alfg/nginx-rtmp.svg)]()
+[![Docker Automated buil](https://img.shields.io/docker/automated/alfg/nginx-rtmp.svg)]()
+
 ## Usage
 
 ### Server
