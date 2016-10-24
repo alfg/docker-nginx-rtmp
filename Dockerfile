@@ -67,8 +67,6 @@ RUN cd /tmp/ffmpeg-${FFMPEG_VERSION} && \
   --disable-debug \
   && make && make install && make distclean
 
-# RUN cd /opt/ && tar cvzf /tmp/nginx.tar.gz nginx
-
 # Cleanup.
 RUN rm -rf /var/cache/* /tmp/*
 
