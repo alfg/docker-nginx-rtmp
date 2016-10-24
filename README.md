@@ -10,6 +10,7 @@ default settings for HLS live streaming. Built on Alpine Linux.
 [![Docker Stars](https://img.shields.io/docker/stars/alfg/nginx-rtmp.svg)]()
 [![Docker Pulls](https://img.shields.io/docker/pulls/alfg/nginx-rtmp.svg)]()
 [![Docker Automated buil](https://img.shields.io/docker/automated/alfg/nginx-rtmp.svg)]()
+[![Build Status](https://travis-ci.org/alfg/docker-nginx-rtmp.svg?branch=master)](https://travis-ci.org/alfg/docker-nginx-rtmp)
 
 ## Usage
 
