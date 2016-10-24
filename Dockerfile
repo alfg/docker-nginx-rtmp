@@ -2,8 +2,8 @@ FROM alpine:latest
 MAINTAINER Alfred Gutierrez <alf.g.jr@gmail.com>
 
 ENV NGINX_VERSION 1.9.15
-ENV FFMPEG_VERSION 3.0.2
 ENV NGINX_RTMP_VERSION 1.1.10
+ENV FFMPEG_VERSION 3.0.2
 
 EXPOSE 1935
 EXPOSE 80
@@ -11,14 +11,14 @@ EXPOSE 80
 RUN mkdir -p /opt/data && mkdir /www
 
 RUN	apk update && apk add	\
-	gcc	binutils-libs binutils build-base	libgcc make pkgconf pkgconfig \
-	openssl openssl-dev ca-certificates pcre \
-	musl-dev libc-dev pcre-dev zlib-dev
+  gcc	binutils-libs binutils build-base	libgcc make pkgconf pkgconfig \
+  openssl openssl-dev ca-certificates pcre \
+  musl-dev libc-dev pcre-dev zlib-dev
 
 # Get nginx source.
 RUN cd /tmp && wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz \
- && tar zxf nginx-${NGINX_VERSION}.tar.gz \
- && rm nginx-${NGINX_VERSION}.tar.gz
+  && tar zxf nginx-${NGINX_VERSION}.tar.gz \
+  && rm nginx-${NGINX_VERSION}.tar.gz
 
 # Get nginx-rtmp module.
 RUN cd /tmp && wget https://github.com/arut/nginx-rtmp-module/archive/v${NGINX_RTMP_VERSION}.tar.gz \
@@ -44,28 +44,28 @@ RUN cd /tmp/ && wget http://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.gz 
 
 # Compile ffmpeg.
 RUN cd /tmp/ffmpeg-${FFMPEG_VERSION} && \
- ./configure \
- --enable-version3 \
- --enable-gpl \
- --enable-nonfree \
- --enable-small \
- --enable-libmp3lame \
- --enable-libx264 \
- --enable-libx265 \
- --enable-libvpx \
- --enable-libtheora \
- --enable-libvorbis \
- --enable-libopus \
- --enable-libfdk-aac \
- --enable-libass \
- --enable-libwebp \
- --enable-librtmp \
- --enable-postproc \
- --enable-avresample \
- --enable-libfreetype \
- --enable-openssl \
- --disable-debug \
- && make && make install && make distclean
+  ./configure \
+  --enable-version3 \
+  --enable-gpl \
+  --enable-nonfree \
+  --enable-small \
+  --enable-libmp3lame \
+  --enable-libx264 \
+  --enable-libx265 \
+  --enable-libvpx \
+  --enable-libtheora \
+  --enable-libvorbis \
+  --enable-libopus \
+  --enable-libfdk-aac \
+  --enable-libass \
+  --enable-libwebp \
+  --enable-librtmp \
+  --enable-postproc \
+  --enable-avresample \
+  --enable-libfreetype \
+  --enable-openssl \
+  --disable-debug \
+  && make && make install && make distclean
 
 RUN cd /opt/ && tar cvzf /tmp/nginx.tar.gz nginx
 
