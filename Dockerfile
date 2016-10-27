@@ -1,9 +1,9 @@
 FROM alpine:latest
 MAINTAINER Alfred Gutierrez <alf.g.jr@gmail.com>
 
-ENV NGINX_VERSION 1.9.15
+ENV NGINX_VERSION 1.10.2
 ENV NGINX_RTMP_VERSION 1.1.10
-ENV FFMPEG_VERSION 3.0.2
+ENV FFMPEG_VERSION 3.1.5
 
 EXPOSE 1935
 EXPOSE 80
@@ -70,7 +70,6 @@ RUN cd /tmp/ffmpeg-${FFMPEG_VERSION} && \
 # Cleanup.
 RUN rm -rf /var/cache/* /tmp/*
 
-# RUN mkdir /www/static
 ADD nginx.conf /opt/nginx/nginx.conf
 ADD static /www/static
 
