@@ -34,9 +34,9 @@ rtmp://<server ip>:1935/encoder/$STREAM_NAME
 ### Watch Stream
 * In Safari, VLC or any HLS player, open:
 ```
-http://<server ip>:8080/hls/$STREAM_NAME.m3u8
+http://<server ip>:8080/live/$STREAM_NAME.m3u8
 ```
-* Example: `http://localhost:8080/hls/hello`
+* Example: `http://localhost:8080/live/hello`
 
 
 ### FFmpeg Build
