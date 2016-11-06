@@ -23,20 +23,20 @@ docker run -it -p 1935:1935 -p 8080:80 --rm nginx-rtmp
 
 * Stream live content to:
 ```
-rtmp://<server ip>:1935/encoder/$STREAM_NAME
+rtmp://<server ip>:1935/stream/$STREAM_NAME
 ```
 
 ### OBS Configuration
 * Stream Type: `Custom Streaming Server`
-* URL: `rtmp://localhost:1935/live`
+* URL: `rtmp://localhost:1935/stream`
 * Stream Key: `hello`
 
 ### Watch Stream
 * In Safari, VLC or any HLS player, open:
 ```
-http://<server ip>:8080/hls/$STREAM_NAME.m3u8
+http://<server ip>:8080/live/$STREAM_NAME.m3u8
 ```
-* Example: `http://localhost:8080/hls/hello`
+* Example: `http://localhost:8080/live/hello`
 
 
 ### FFmpeg Build
