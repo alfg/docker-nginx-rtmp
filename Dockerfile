@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.3
 MAINTAINER Alfred Gutierrez <alf.g.jr@gmail.com>
 
 ENV NGINX_VERSION 1.10.2
