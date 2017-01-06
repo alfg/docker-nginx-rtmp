@@ -29,6 +29,8 @@ RUN cd /tmp/nginx-${NGINX_VERSION} \
   && ./configure \
   --prefix=/opt/nginx \
   --add-module=/tmp/nginx-rtmp-module-${NGINX_RTMP_VERSION} \
+  --with-http_ssl_module \
+  --with-http_v2_module \
   --conf-path=/opt/nginx/nginx.conf --error-log-path=/opt/nginx/logs/error.log --http-log-path=/opt/nginx/logs/access.log \
   --with-debug
 RUN cd /tmp/nginx-${NGINX_VERSION} && make && make install
