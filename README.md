@@ -18,7 +18,7 @@ default settings for HLS live streaming. Built on Alpine Linux.
 * Pull docker image and run:
 ```
 docker pull alfg/nginx-rtmp
-docker run -it -p 1935:1935 -p 8080:80 --rm nginx-rtmp
+docker run -it -p 1935:1935 -p 8080:80 --rm alfg/nginx-rtmp
 ```
 or 
 
