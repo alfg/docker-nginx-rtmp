@@ -48,7 +48,7 @@ RUN cd /tmp/nginx-${NGINX_VERSION} && \
   --conf-path=/opt/nginx/nginx.conf \
   --error-log-path=/opt/nginx/logs/error.log \
   --http-log-path=/opt/nginx/logs/access.log \
-  --with-debug \
+  --with-debug && \
   cd /tmp/nginx-${NGINX_VERSION} && make && make install
 
 # FFmpeg dependencies.
