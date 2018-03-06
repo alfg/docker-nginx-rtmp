@@ -2,7 +2,7 @@
 A Dockerfile installing NGINX, nginx-rtmp-module and FFmpeg from source with
 default settings for HLS live streaming. Built on Alpine Linux.
 
-* Nginx 1.13.8 (compiled from source)
+* Nginx 1.13.9 (compiled from source)
 * nginx-rtmp-module 1.2.1 (compiled from source)
 * ffmpeg 3.4.2 (compiled from source)
 * Default HLS settings (See: [nginx.conf](nginx.conf))
