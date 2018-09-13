@@ -16,6 +16,7 @@ RUN	apk update && apk add	\
   binutils-libs \
   build-base \
   ca-certificates \
+  curl \
   gcc \
   libc-dev \
   libgcc \
