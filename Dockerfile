@@ -1,16 +1,16 @@
 ARG NGINX_VERSION=1.14.0
 ARG NGINX_RTMP_VERSION=1.2.1
-ARG FFMPEG_VERSION=3.4.2
+ARG FFMPEG_VERSION=4.0.2
 
-FROM alpine:3.7 as build
+
+##############################
+# Build the NGINX-build image.
+FROM alpine:latest as build-nginx
 ARG NGINX_VERSION
 ARG NGINX_RTMP_VERSION
 
-
 # Build dependencies.
 RUN	apk add --update \
-  binutils \
-  binutils-libs \
   build-base \
   ca-certificates \
   curl \
@@ -52,12 +52,14 @@ RUN cd /tmp/nginx-${NGINX_VERSION} && \
   --with-debug && \
   cd /tmp/nginx-${NGINX_VERSION} && make && make install
 
+###############################
+# Build the FFmpeg-build image.
 FROM alpine:latest as build-ffmpeg
 ARG FFMPEG_VERSION
 ARG PREFIX=/usr/local
 
 # FFmpeg build dependencies.
-RUN	apk add --update --no-cache \
+RUN	apk add --update \
   build-base \
   freetype-dev \
   gcc \
@@ -116,8 +118,11 @@ RUN cd /tmp/ffmpeg-${FFMPEG_VERSION} && \
 # Cleanup.
 RUN rm -rf /var/cache/* /tmp/*
 
+##########################
+# Build the release image.
 FROM alpine:latest
 LABEL MAINTAINER Alfred Gutierrez <alf.g.jr@gmail.com>
+
 RUN apk add --update \
   ca-certificates \
   openssl \
@@ -134,7 +139,7 @@ RUN apk add --update \
   x264-dev \
   x265-dev
 
-COPY --from=build /opt/nginx /opt/nginx
+COPY --from=build-nginx /opt/nginx /opt/nginx
 COPY --from=build-ffmpeg /usr/local /usr/local
 COPY --from=build-ffmpeg /usr/lib/libfdk-aac.so.1 /usr/lib/libfdk-aac.so.1
 
