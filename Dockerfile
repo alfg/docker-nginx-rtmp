@@ -1,17 +1,14 @@
-FROM alpine:3.4
-LABEL author Alfred Gutierrez <alf.g.jr@gmail.com>
+ARG NGINX_VERSION=1.14.0
+ARG NGINX_RTMP_VERSION=1.2.1
+ARG FFMPEG_VERSION=3.4.2
 
-ENV NGINX_VERSION 1.13.9
-ENV NGINX_RTMP_VERSION 1.2.1
-ENV FFMPEG_VERSION 3.4.2
+FROM alpine:3.7 as build
+ARG NGINX_VERSION
+ARG NGINX_RTMP_VERSION
 
-EXPOSE 1935
-EXPOSE 80
-
-RUN mkdir -p /opt/data && mkdir /www
 
 # Build dependencies.
-RUN	apk update && apk add	\
+RUN	apk add --update \
   binutils \
   binutils-libs \
   build-base \
@@ -20,6 +17,7 @@ RUN	apk update && apk add	\
   gcc \
   libc-dev \
   libgcc \
+  linux-headers \
   make \
   musl-dev \
   openssl \
@@ -32,7 +30,7 @@ RUN	apk update && apk add	\
 
 # Get nginx source.
 RUN cd /tmp && \
-  wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
+  wget https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
   tar zxf nginx-${NGINX_VERSION}.tar.gz && \
   rm nginx-${NGINX_VERSION}.tar.gz
 
@@ -47,13 +45,40 @@ RUN cd /tmp/nginx-${NGINX_VERSION} && \
   --prefix=/opt/nginx \
   --add-module=/tmp/nginx-rtmp-module-${NGINX_RTMP_VERSION} \
   --conf-path=/opt/nginx/nginx.conf \
+  --with-threads \
+  --with-file-aio \
   --error-log-path=/opt/nginx/logs/error.log \
   --http-log-path=/opt/nginx/logs/access.log \
   --with-debug && \
   cd /tmp/nginx-${NGINX_VERSION} && make && make install
 
-# FFmpeg dependencies.
-RUN apk add --update nasm yasm-dev lame-dev libogg-dev x264-dev libvpx-dev libvorbis-dev x265-dev freetype-dev libass-dev libwebp-dev rtmpdump-dev libtheora-dev opus-dev
+FROM alpine:latest as build-ffmpeg
+ARG FFMPEG_VERSION
+ARG PREFIX=/usr/local
+
+# FFmpeg build dependencies.
+RUN	apk add --update --no-cache \
+  build-base \
+  freetype-dev \
+  gcc \
+  lame-dev \
+  libogg-dev \
+  libass \
+  libass-dev \
+  libvpx-dev \
+  libvorbis-dev \
+  libwebp-dev \
+  libtheora-dev \
+  nasm \
+  opus-dev \
+  pkgconf \
+  pkgconfig \
+  rtmpdump-dev \
+  wget \
+  x264-dev \
+  x265-dev \
+  yasm-dev
+
 RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories
 RUN apk add --update fdk-aac-dev
 
@@ -65,6 +90,7 @@ RUN cd /tmp/ && \
 # Compile ffmpeg.
 RUN cd /tmp/ffmpeg-${FFMPEG_VERSION} && \
   ./configure \
+  --prefix=${PREFIX} \
   --enable-version3 \
   --enable-gpl \
   --enable-nonfree \
@@ -90,8 +116,34 @@ RUN cd /tmp/ffmpeg-${FFMPEG_VERSION} && \
 # Cleanup.
 RUN rm -rf /var/cache/* /tmp/*
 
+FROM alpine:latest
+LABEL MAINTAINER Alfred Gutierrez <alf.g.jr@gmail.com>
+RUN apk add --update \
+  ca-certificates \
+  openssl \
+  pcre \
+  lame \
+  libogg \
+  libass \
+  libvpx \
+  libvorbis \
+  libwebp \
+  libtheora \
+  opus \
+  rtmpdump \
+  x264-dev \
+  x265-dev
+
+COPY --from=build /opt/nginx /opt/nginx
+COPY --from=build-ffmpeg /usr/local /usr/local
+COPY --from=build-ffmpeg /usr/lib/libfdk-aac.so.1 /usr/lib/libfdk-aac.so.1
+
 # Add NGINX config and static files.
 ADD nginx.conf /opt/nginx/nginx.conf
+RUN mkdir -p /opt/data && mkdir /www
 ADD static /www/static
+
+EXPOSE 1935
+EXPOSE 80
 
 CMD ["/opt/nginx/sbin/nginx"]
