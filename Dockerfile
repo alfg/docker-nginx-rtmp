@@ -1,6 +1,6 @@
-ARG NGINX_VERSION=1.14.0
+ARG NGINX_VERSION=1.14.1
 ARG NGINX_RTMP_VERSION=1.2.1
-ARG FFMPEG_VERSION=4.0.2
+ARG FFMPEG_VERSION=4.1
 
 
 ##############################
@@ -10,7 +10,7 @@ ARG NGINX_VERSION
 ARG NGINX_RTMP_VERSION
 
 # Build dependencies.
-RUN	apk add --update \
+RUN apk add --update \
   build-base \
   ca-certificates \
   curl \
@@ -57,12 +57,12 @@ RUN cd /tmp/nginx-${NGINX_VERSION} && \
 FROM alpine:latest as build-ffmpeg
 ARG FFMPEG_VERSION
 ARG PREFIX=/usr/local
+ARG MAKEFLAGS="-j4"
 
 # FFmpeg build dependencies.
 RUN	apk add --update \
   build-base \
   freetype-dev \
-  gcc \
   lame-dev \
   libogg-dev \
   libass \
@@ -71,7 +71,6 @@ RUN	apk add --update \
   libvorbis-dev \
   libwebp-dev \
   libtheora-dev \
-  nasm \
   opus-dev \
   pkgconf \
   pkgconfig \
@@ -79,7 +78,7 @@ RUN	apk add --update \
   wget \
   x264-dev \
   x265-dev \
-  yasm-dev
+  yasm
 
 RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories
 RUN apk add --update fdk-aac-dev
@@ -112,7 +111,10 @@ RUN cd /tmp/ffmpeg-${FFMPEG_VERSION} && \
   --enable-avresample \
   --enable-libfreetype \
   --enable-openssl \
-  --disable-debug && \
+  --disable-debug \
+  --disable-doc \
+  --disable-ffplay \
+  --extra-libs="-lpthread -lm" && \
   make && make install && make distclean
 
 # Cleanup.
