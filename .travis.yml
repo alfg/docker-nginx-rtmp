@@ -4,7 +4,7 @@ language: bash
 services: docker
 
 env:
- - DOCKER_IMAGE=nginx-rtmp
+  - DOCKER_IMAGE=nginx-rtmp
 
 script:
   - docker build -t ${DOCKER_IMAGE} .

@@ -33,6 +33,11 @@ docker run -it -p 1935:1935 -p 8080:80 --rm nginx-rtmp
 rtmp://<server ip>:1935/stream/$STREAM_NAME
 ```
 
+### SSL 
+The `nginx.conf` is configured for both HTTP and HTTPS using a self-signed certificate supplied in [/certs](/certs). If you wish to use HTTPS, it is **highly recommended** to obtain your own certificates and update the `ssl_certificate` and `ssl_certificate_key` paths in [nginx.conf](nginx.conf).
+
+I recommend using [Certbot](https://certbot.eff.org/docs/install.html) from [Let's Encrypt](https://letsencrypt.org).
+
 ### OBS Configuration
 * Stream Type: `Custom Streaming Server`
 * URL: `rtmp://localhost:1935/stream`
