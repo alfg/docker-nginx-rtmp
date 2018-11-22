@@ -33,6 +33,18 @@ docker run -it -p 1935:1935 -p 8080:80 --rm nginx-rtmp
 rtmp://<server ip>:1935/stream/$STREAM_NAME
 ```
 
+### SSL 
+To enable SSL, see [nginx.conf](nginx.conf) and uncomment the lines:
+```
+listen 443 ssl;
+ssl_certificate     /opt/certs/example.com.crt;
+ssl_certificate_key /opt/certs/example.com.key;
+```
+
+This will enable HTTPS using a self-signed certificate supplied in [/certs](/certs). If you wish to use HTTPS, it is **highly recommended** to obtain your own certificates and update the `ssl_certificate` and `ssl_certificate_key` paths.
+
+I recommend using [Certbot](https://certbot.eff.org/docs/install.html) from [Let's Encrypt](https://letsencrypt.org).
+
 ### OBS Configuration
 * Stream Type: `Custom Streaming Server`
 * URL: `rtmp://localhost:1935/stream`
@@ -43,8 +55,9 @@ rtmp://<server ip>:1935/stream/$STREAM_NAME
 ```
 http://<server ip>:8080/live/$STREAM_NAME.m3u8
 ```
-* Example: `http://localhost:8080/live/hello`
-
+* Example Playlist: `http://localhost:8080/live/hello.m3u8`
+* [VideoJS Player](https://video-dev.github.io/hls.js/stable/demo/?src=http%3A%2F%2Flocalhost%3A8080%2Flive%2Fhello.m3u8
+* FFplay: `ffplay -fflags nobuffer rtmp://localhost:1935/stream/hello`
 
 ### FFmpeg Build
 ```

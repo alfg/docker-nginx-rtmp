@@ -6,3 +6,6 @@ services:
     ports:
       - 1935:1935
       - 8080:80
+      - 8443:443
+    volumes:
+      - ./certs:/opt/certs

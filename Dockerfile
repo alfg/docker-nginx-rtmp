@@ -47,6 +47,7 @@ RUN cd /tmp/nginx-${NGINX_VERSION} && \
   --conf-path=/opt/nginx/nginx.conf \
   --with-threads \
   --with-file-aio \
+  --with-http_ssl_module \
   --error-log-path=/opt/nginx/logs/error.log \
   --http-log-path=/opt/nginx/logs/access.log \
   --with-debug && \
