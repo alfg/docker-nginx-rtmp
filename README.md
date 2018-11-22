@@ -34,7 +34,14 @@ rtmp://<server ip>:1935/stream/$STREAM_NAME
 ```
 
 ### SSL 
-The `nginx.conf` is configured for both HTTP and HTTPS using a self-signed certificate supplied in [/certs](/certs). If you wish to use HTTPS, it is **highly recommended** to obtain your own certificates and update the `ssl_certificate` and `ssl_certificate_key` paths in [nginx.conf](nginx.conf).
+To enable SSL, see [nginx.conf](nginx.conf) and uncomment the lines:
+```
+listen 443 ssl;
+ssl_certificate     /opt/certs/example.com.crt;
+ssl_certificate_key /opt/certs/example.com.key;
+```
+
+This will enable HTTPS using a self-signed certificate supplied in [/certs](/certs). If you wish to use HTTPS, it is **highly recommended** to obtain your own certificates and update the `ssl_certificate` and `ssl_certificate_key` paths.
 
 I recommend using [Certbot](https://certbot.eff.org/docs/install.html) from [Let's Encrypt](https://letsencrypt.org).
 
