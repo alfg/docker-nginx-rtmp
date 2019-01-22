@@ -61,7 +61,7 @@ ARG PREFIX=/usr/local
 ARG MAKEFLAGS="-j4"
 
 # FFmpeg build dependencies.
-RUN	apk add --update \
+RUN apk add --update \
   build-base \
   freetype-dev \
   lame-dev \
