@@ -140,7 +140,8 @@ RUN apk add --update \
   opus \
   rtmpdump \
   x264-dev \
-  x265-dev
+  x265-dev \
+  gettext
 
 COPY --from=build-nginx /opt/nginx /opt/nginx
 COPY --from=build-ffmpeg /usr/local /usr/local
