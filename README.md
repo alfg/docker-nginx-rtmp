@@ -4,7 +4,7 @@ default settings for HLS live streaming. Built on Alpine Linux.
 
 * Nginx 1.16.0 (Stable version compiled from source)
 * nginx-rtmp-module 1.2.1 (compiled from source)
-* ffmpeg 4.1.3 (compiled from source)
+* ffmpeg 4.2 (compiled from source)
 * Default HLS settings (See: [nginx.conf](nginx.conf))
 
 [![Docker Stars](https://img.shields.io/docker/stars/alfg/nginx-rtmp.svg)](https://hub.docker.com/r/alfg/nginx-rtmp/)
@@ -61,18 +61,20 @@ http://<server ip>:8080/live/$STREAM_NAME.m3u8
 
 ### FFmpeg Build
 ```
-ffmpeg version 4.1.3 Copyright (c) 2000-2019 the FFmpeg developers
+$ ffmpeg -buildconf
+
+ffmpeg version 4.2 Copyright (c) 2000-2019 the FFmpeg developers
   built with gcc 6.4.0 (Alpine 6.4.0)
   configuration: --prefix=/usr/local --enable-version3 --enable-gpl --enable-nonfree --enable-small --enable-libmp3lame --enable-libx264 --enable-libx265 --enable-libvpx --enable-libtheora --enable-libvorbis --enable-libopus --enable-libfdk-aac --enable-libass --enable-libwebp --enable-librtmp --enable-postproc --enable-avresample --enable-libfreetype --enable-openssl --disable-debug --disable-doc --disable-ffplay --extra-libs='-lpthread -lm'
-  libavutil      56. 22.100 / 56. 22.100
-  libavcodec     58. 35.100 / 58. 35.100
-  libavformat    58. 20.100 / 58. 20.100
-  libavdevice    58.  5.100 / 58.  5.100
-  libavfilter     7. 40.101 /  7. 40.101
+  libavutil      56. 31.100 / 56. 31.100
+  libavcodec     58. 54.100 / 58. 54.100
+  libavformat    58. 29.100 / 58. 29.100
+  libavdevice    58.  8.100 / 58.  8.100
+  libavfilter     7. 57.100 /  7. 57.100
   libavresample   4.  0.  0 /  4.  0.  0
-  libswscale      5.  3.100 /  5.  3.100
-  libswresample   3.  3.100 /  3.  3.100
-  libpostproc    55.  3.100 / 55.  3.100
+  libswscale      5.  5.100 /  5.  5.100
+  libswresample   3.  5.100 /  3.  5.100
+  libpostproc    55.  5.100 / 55.  5.100
 
   configuration:
     --prefix=/usr/local
