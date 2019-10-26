@@ -1,6 +1,6 @@
-ARG NGINX_VERSION=1.16.0
+ARG NGINX_VERSION=1.16.1
 ARG NGINX_RTMP_VERSION=1.2.1
-ARG FFMPEG_VERSION=4.2
+ARG FFMPEG_VERSION=4.2.1
 
 
 ##############################
@@ -42,14 +42,12 @@ RUN cd /tmp && \
 # Compile nginx with nginx-rtmp module.
 RUN cd /tmp/nginx-${NGINX_VERSION} && \
   ./configure \
-  --prefix=/opt/nginx \
+  --prefix=/usr/local/nginx \
   --add-module=/tmp/nginx-rtmp-module-${NGINX_RTMP_VERSION} \
-  --conf-path=/opt/nginx/nginx.conf \
+  --conf-path=/etc/nginx/nginx.conf \
   --with-threads \
   --with-file-aio \
   --with-http_ssl_module \
-  --error-log-path=/opt/nginx/logs/error.log \
-  --http-log-path=/opt/nginx/logs/access.log \
   --with-debug && \
   cd /tmp/nginx-${NGINX_VERSION} && make && make install
 
@@ -143,16 +141,17 @@ RUN apk add --update \
   x264-dev \
   x265-dev
 
-COPY --from=build-nginx /opt/nginx /opt/nginx
+COPY --from=build-nginx /usr/local/nginx /usr/local/nginx
 COPY --from=build-ffmpeg /usr/local /usr/local
 COPY --from=build-ffmpeg /usr/lib/libfdk-aac.so.2 /usr/lib/libfdk-aac.so.2
 
-# Add NGINX config and static files.
-ADD nginx.conf /opt/nginx/nginx.conf
+# Add NGINX path, config and static files.
+ENV PATH "${PATH}:/usr/local/nginx/sbin"
+ADD nginx.conf /etc/nginx/nginx.conf
 RUN mkdir -p /opt/data && mkdir /www
 ADD static /www/static
 
 EXPOSE 1935
 EXPOSE 80
 
-CMD ["/opt/nginx/sbin/nginx"]
+CMD ["nginx"]
