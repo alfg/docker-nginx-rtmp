@@ -43,7 +43,7 @@ RUN cd /tmp && \
 RUN cd /tmp/nginx-${NGINX_VERSION} && \
   ./configure \
   --prefix=/usr/local/nginx \
-  --add-module=/tmp/nginx-rtmp-module-${NGINX_RTMP_VERSION} \
+  --add-module=/tmp/nginx-http-flv-module-${NGINX_RTMP_VERSION} \
   --conf-path=/etc/nginx/nginx.conf \
   --with-threads \
   --with-file-aio \
