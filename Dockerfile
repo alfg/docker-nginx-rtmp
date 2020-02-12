@@ -1,5 +1,5 @@
 ARG NGINX_VERSION=1.16.1
-ARG NGINX_RTMP_VERSION=1.2.1
+ARG NGINX_RTMP_VERSION=1.2.7
 ARG FFMPEG_VERSION=4.2.1
 
 
@@ -34,9 +34,9 @@ RUN cd /tmp && \
   tar zxf nginx-${NGINX_VERSION}.tar.gz && \
   rm nginx-${NGINX_VERSION}.tar.gz
 
-# Get nginx-rtmp module.
+# Get nginx-http-flv module.
 RUN cd /tmp && \
-  wget https://github.com/arut/nginx-rtmp-module/archive/v${NGINX_RTMP_VERSION}.tar.gz && \
+  wget https://github.com/winshining/nginx-http-flv-module/archive/v${NGINX_RTMP_VERSION}.tar.gz && \
   tar zxf v${NGINX_RTMP_VERSION}.tar.gz && rm v${NGINX_RTMP_VERSION}.tar.gz
 
 # Compile nginx with nginx-rtmp module.
