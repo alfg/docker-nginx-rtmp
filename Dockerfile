@@ -1,11 +1,11 @@
 ARG NGINX_VERSION=1.16.1
-ARG NGINX_RTMP_VERSION=1.2.1
+ARG NGINX_RTMP_VERSION=2.0.0.6
 ARG FFMPEG_VERSION=4.2.1
 
 
 ##############################
 # Build the NGINX-build image.
-FROM alpine:3.8 as build-nginx
+FROM alpine:latest as build-nginx
 ARG NGINX_VERSION
 ARG NGINX_RTMP_VERSION
 
@@ -36,7 +36,7 @@ RUN cd /tmp && \
 
 # Get nginx-rtmp module.
 RUN cd /tmp && \
-  wget https://github.com/arut/nginx-rtmp-module/archive/v${NGINX_RTMP_VERSION}.tar.gz && \
+  wget https://github.com/chetandhembre/nginx-rtmp-module/archive/v${NGINX_RTMP_VERSION}.tar.gz && \
   tar zxf v${NGINX_RTMP_VERSION}.tar.gz && rm v${NGINX_RTMP_VERSION}.tar.gz
 
 # Compile nginx with nginx-rtmp module.
@@ -48,12 +48,13 @@ RUN cd /tmp/nginx-${NGINX_VERSION} && \
   --with-threads \
   --with-file-aio \
   --with-http_ssl_module \
-  --with-debug && \
+  --with-debug \
+  --with-cc-opt="-Wimplicit-fallthrough=0" && \
   cd /tmp/nginx-${NGINX_VERSION} && make && make install
 
 ###############################
 # Build the FFmpeg-build image.
-FROM alpine:3.8 as build-ffmpeg
+FROM alpine:latest as build-ffmpeg
 ARG FFMPEG_VERSION
 ARG PREFIX=/usr/local
 ARG MAKEFLAGS="-j4"
@@ -71,6 +72,7 @@ RUN apk add --update \
   libvorbis-dev \
   libwebp-dev \
   libtheora-dev \
+  openssl-dev \
   opus-dev \
   pkgconf \
   pkgconfig \
@@ -122,7 +124,7 @@ RUN rm -rf /var/cache/* /tmp/*
 
 ##########################
 # Build the release image.
-FROM alpine:3.8
+FROM alpine:latest
 LABEL MAINTAINER Alfred Gutierrez <alf.g.jr@gmail.com>
 
 RUN apk add --update \
