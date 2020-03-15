@@ -47,6 +47,8 @@ RUN cd /tmp/nginx-${NGINX_VERSION} && \
   --conf-path=/etc/nginx/nginx.conf \
   --with-threads \
   --with-file-aio \
+  --error-log-path=/var/log/nginx/error.log \
+  --http-log-path=/var/log/nginx/access.log \
   --with-http_ssl_module \
   --with-debug \
   --with-cc-opt="-Wimplicit-fallthrough=0" && \
@@ -152,7 +154,20 @@ ADD nginx.conf /etc/nginx/nginx.conf
 RUN mkdir -p /opt/data && mkdir /www
 ADD static /www/static
 
+# Add user and group to run NGINX as unprivileged user.
+RUN addgroup -g 101 -S nginx && adduser -S nginx -G nginx
+RUN mkdir -p /var/log/nginx /opt/data/hls
+RUN chown nginx:nginx /var/log/nginx /opt/data/hls
+
+# Forward logs to stdout/stderr.
+RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
+    ln -sf /dev/stderr /var/log/nginx/error.log
+
 EXPOSE 1935
-EXPOSE 80
+EXPOSE 8080
+
+STOPSIGNAL SIGTERM
+
+USER nginx
 
 CMD ["nginx"]
