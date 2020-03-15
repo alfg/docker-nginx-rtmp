@@ -7,5 +7,8 @@ services:
       - 1935:1935
       - 8080:80
       - 8443:443
+    environment:
+      - HTTP_PORT=80
+      - RTMP_PORT=1935
     volumes:
       - ./certs:/opt/certs

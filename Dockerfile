@@ -82,7 +82,7 @@ RUN apk add --update \
   x265-dev \
   yasm
 
-RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories
+RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories
 RUN apk add --update fdk-aac-dev
 
 # Get FFmpeg source.
@@ -126,8 +126,14 @@ RUN rm -rf /var/cache/* /tmp/*
 FROM alpine:3.11
 LABEL MAINTAINER Alfred Gutierrez <alf.g.jr@gmail.com>
 
+# Set default ports.
+ENV HTTP_PORT 80
+ENV HTTPS_PORT 443
+ENV RTMP_PORT 1935
+
 RUN apk add --update \
   ca-certificates \
+  gettext \
   openssl \
   pcre \
   lame \
@@ -148,11 +154,13 @@ COPY --from=build-ffmpeg /usr/lib/libfdk-aac.so.2 /usr/lib/libfdk-aac.so.2
 
 # Add NGINX path, config and static files.
 ENV PATH "${PATH}:/usr/local/nginx/sbin"
-ADD nginx.conf /etc/nginx/nginx.conf
+ADD nginx.conf /etc/nginx/nginx.conf.template
 RUN mkdir -p /opt/data && mkdir /www
 ADD static /www/static
 
 EXPOSE 1935
 EXPOSE 80
 
-CMD ["nginx"]
+CMD /bin/sh -c "envsubst" < /etc/nginx/nginx.conf.template > \
+  /etc/nginx/nginx.conf && \
+  nginx
