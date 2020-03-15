@@ -1,3 +1,4 @@
+ARG IMAGE=alpine:3.11
 ARG NGINX_VERSION=1.16.1
 ARG NGINX_RTMP_VERSION=1.2.1
 ARG FFMPEG_VERSION=4.2.2
@@ -5,7 +6,7 @@ ARG FFMPEG_VERSION=4.2.2
 
 ##############################
 # Build the NGINX-build image.
-FROM alpine:3.11 as build-nginx
+FROM $IMAGE as build-nginx
 ARG NGINX_VERSION
 ARG NGINX_RTMP_VERSION
 
@@ -56,7 +57,7 @@ RUN cd /tmp/nginx-${NGINX_VERSION} && \
 
 ###############################
 # Build the FFmpeg-build image.
-FROM alpine:3.11 as build-ffmpeg
+FROM $IMAGE as build-ffmpeg
 ARG FFMPEG_VERSION
 ARG PREFIX=/usr/local
 ARG MAKEFLAGS="-j4"
@@ -84,7 +85,7 @@ RUN apk add --update \
   x265-dev \
   yasm
 
-RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories
+RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories
 RUN apk add --update fdk-aac-dev
 
 # Get FFmpeg source.
@@ -125,7 +126,7 @@ RUN rm -rf /var/cache/* /tmp/*
 
 ##########################
 # Build the release image.
-FROM alpine:3.11
+FROM $IMAGE
 LABEL MAINTAINER Alfred Gutierrez <alf.g.jr@gmail.com>
 
 RUN apk add --update \
