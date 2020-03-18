@@ -138,6 +138,7 @@ RUN apk add --update \
   pcre \
   lame \
   libogg \
+  curl \
   libass \
   libvpx \
   libvorbis \
