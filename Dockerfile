@@ -162,6 +162,7 @@ ADD static /www/static
 EXPOSE 1935
 EXPOSE 80
 
-CMD /bin/sh -c "envsubst" < /etc/nginx/nginx.conf.template > \
+CMD /bin/sh -c envsubst "$(env | sed -e 's/=.*//' -e 's/^/\$/g')" < \
+  /etc/nginx/nginx.conf.template > \
   /etc/nginx/nginx.conf && \
   nginx
