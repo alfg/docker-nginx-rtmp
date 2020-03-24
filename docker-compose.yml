@@ -12,3 +12,7 @@ services:
       - RTMP_PORT=1935
     volumes:
       - ./certs:/opt/certs
+    links:
+      - stunnel
+  stunnel:
+    build: stunnel 
