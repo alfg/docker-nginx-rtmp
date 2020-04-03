@@ -150,6 +150,7 @@ RUN apk add --update \
   x265-dev
 
 COPY --from=build-nginx /usr/local/nginx /usr/local/nginx
+COPY --from=build-nginx /etc/nginx /etc/nginx
 COPY --from=build-ffmpeg /usr/local /usr/local
 COPY --from=build-ffmpeg /usr/lib/libfdk-aac.so.2 /usr/lib/libfdk-aac.so.2
 
