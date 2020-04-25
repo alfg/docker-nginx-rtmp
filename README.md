@@ -48,6 +48,14 @@ I recommend using [Certbot](https://certbot.eff.org/docs/install.html) from [Let
 ### Environment Variables
 This Docker image uses `envsubst` for environment variable substitution. You can define additional environment variables in `nginx.conf` as `${var}` and pass them in your `docker-compose` file or `docker` command.
 
+
+### Custom `nginx.conf`
+If you wish to use your own `nginx.conf`, mount it as a volume in your `docker-compose` or `docker` command as `nginx.conf.template`:
+```yaml
+volumes:
+  - ./nginx.conf:/etc/nginx/nginx.conf.template
+```
+
 ### OBS Configuration
 * Stream Type: `Custom Streaming Server`
 * URL: `rtmp://localhost:1935/stream`
