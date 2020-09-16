@@ -110,7 +110,7 @@ ffmpeg version 4.3.1 Copyright (c) 2000-2020 the FFmpeg developers
     --disable-debug
     --disable-doc
     --disable-ffplay
-    --extra-libs='-lpthread -lm''
+    --extra-libs='-lpthread -lm'
 ```
 
 ## Resources
