@@ -5,15 +5,26 @@ on: [push, pull_request]
 jobs:
 
   build:
- 
+
     runs-on: ubuntu-latest
- 
     steps:
     - uses: actions/checkout@v1
+    - name: Set up Docker Buildx
+      uses: crazy-max/ghaction-docker-buildx@v3
+    - name: Cache Docker layers
+      uses: actions/cache@v2
+      id: cache
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
     - name: Build the Docker image
       run: |
-        docker build . --file Dockerfile --tag nginx-rtmp:latest
-        docker tag nginx-rtmp starmetal/nginx-rtmp:latest
+        DOCKER_PLATFORMS=linux/amd64,linux/arm64
+        docker buildx build --tag starmetal/nginx-rtmp:latest ----platform ${DOCKER_PLATFORMS} --push .
+        #docker build . --file Dockerfile --tag nginx-rtmp:latest
+        #docker tag nginx-rtmp starmetal/nginx-rtmp:latest
         # docker login docker.pkg.github.com --username rikugun --password ${{ secrets.GITHUB_TOKEN }}
         # docker tag nginx-rtmp docker.pkg.github.com/starmetal/docker-nginx-rtmp/nginx-rtmp:latest
         # push docker.pkg.github.com/starmetal/docker-openencoder/nginx-rtmp:latest
