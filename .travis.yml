@@ -7,17 +7,17 @@ jobs:
   include:
     - env: 
       - DOCKER_FILE=Dockerfile
-      - DOCKER_TAG=lates  
+      - DOCKER_TAG=''  
     - env:
       - DOCKER_FILE=DockerfileCudaSupport
-      - DOCKER_TAG=cuda  
+      - DOCKER_TAG=_cuda  
 env:
   - DOCKER_IMAGE=nginx-rtmp
 
 script:
-  - docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} -f ${DOCKER_FILE} .
+  - docker build -t ${DOCKER_IMAGE}${DOCKER_TAG} -f ${DOCKER_FILE} .
 
 after_script:
   - docker images
-  - docker run -d -p 1935:1935 -p 8080:80 -t ${DOCKER_IMAGE}:${DOCKER_TAG}
+  - docker run -d -p 1935:1935 -p 8080:80 -t ${DOCKER_IMAGE}${DOCKER_TAG}
   - docker ps -a
