@@ -18,14 +18,14 @@ default settings for HLS live streaming. Built on Alpine Linux.
 * Pull docker image and run:
 ```
 docker pull alfg/nginx-rtmp
-docker run -it -p 1935:1935 -p 8080:80 --rm alfg/nginx-rtmp
+docker run -it -p 1935:1935 -p 80:80 --rm alfg/nginx-rtmp
 ```
 or 
 
 * Build and run container from source:
 ```
 docker build -t nginx-rtmp .
-docker run -it -p 1935:1935 -p 8080:80 --rm nginx-rtmp
+docker run -it -p 1935:1935 -p 80:80 --rm nginx-rtmp
 ```
 
 * Stream live content to:
@@ -40,6 +40,7 @@ listen 443 ssl;
 ssl_certificate     /opt/certs/example.com.crt;
 ssl_certificate_key /opt/certs/example.com.key;
 ```
+and don't forget to add `-p 443:443` to the `docker run` command.
 
 This will enable HTTPS using a self-signed certificate supplied in [/certs](/certs). If you wish to use HTTPS, it is **highly recommended** to obtain your own certificates and update the `ssl_certificate` and `ssl_certificate_key` paths.
 
