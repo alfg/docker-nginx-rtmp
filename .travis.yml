@@ -10,7 +10,7 @@ jobs:
       - DOCKER_TAG=latest
       - DOCKER_IMAGE=nginx-rtmp 
     - env:
-      - DOCKER_FILE=DockerfileCudaSupport
+      - DOCKER_FILE=Dockerfile.cuda
       - DOCKER_TAG=cuda
       - DOCKER_IMAGE=nginx-rtmp
 
