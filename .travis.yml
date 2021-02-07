@@ -3,13 +3,21 @@ sudo: required
 language: bash
 services: docker
 
-env:
-  - DOCKER_IMAGE=nginx-rtmp
+jobs:
+  include:
+    - env: 
+      - DOCKER_FILE=Dockerfile
+      - DOCKER_TAG=latest
+      - DOCKER_IMAGE=nginx-rtmp 
+    - env:
+      - DOCKER_FILE=Dockerfile.cuda
+      - DOCKER_TAG=cuda
+      - DOCKER_IMAGE=nginx-rtmp
 
 script:
-  - docker build -t ${DOCKER_IMAGE} .
+  - docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} -f ${DOCKER_FILE} .
 
 after_script:
   - docker images
-  - docker run -d -p 1935:1935 -p 8080:80 -t ${DOCKER_IMAGE}
+  - docker run -d -p 1935:1935 -p 8080:80 -t ${DOCKER_IMAGE}:${DOCKER_TAG}
   - docker ps -a
