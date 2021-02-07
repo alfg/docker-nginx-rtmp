@@ -170,6 +170,7 @@ COPY --from=build-ffmpeg /usr/lib/x86_64-linux-gnu/libfdk-aac.so /usr/lib/x86_64
 ENV PATH "${PATH}:/usr/local/nginx/sbin"
 ENV HW_ACCEL "-hwaccel cuda -hwaccel_output_format cuda"
 ADD nginx.conf /etc/nginx/nginx.conf.template
+RUN sed -i "s/ffmpeg/ffmpeg ${HW_ACCEL}/g" /etc/nginx/nginx.conf.template
 RUN mkdir -p /opt/data && mkdir /www
 ADD static /www/static
 
