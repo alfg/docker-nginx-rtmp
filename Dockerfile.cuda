@@ -5,28 +5,27 @@ ARG FFMPEG_VERSION=4.3.1
 
 ##############################
 # Build the NGINX-build image.
-FROM alpine:3.11 as build-nginx
+FROM ubuntu:18.04 as build-nginx
 ARG NGINX_VERSION
 ARG NGINX_RTMP_VERSION
 
 # Build dependencies.
-RUN apk add --update \
-  build-base \
+RUN apt update && apt install -y \
+  build-essential \
+  cmake \
   ca-certificates \
   curl \
   gcc \
   libc-dev \
-  libgcc \
-  linux-headers \
   make \
   musl-dev \
   openssl \
-  openssl-dev \
-  pcre \
-  pcre-dev \
-  pkgconf \
-  pkgconfig \
-  zlib-dev
+  libssl-dev \
+  libpcre3 \
+  libpcre3-dev \
+  pkg-config \
+  zlib1g-dev \
+  wget
 
 # Get nginx source.
 RUN cd /tmp && \
