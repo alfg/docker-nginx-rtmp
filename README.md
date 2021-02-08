@@ -122,6 +122,8 @@ Use the tag: `alfg/nginx-rtmp:cuda`:
 docker run -it -p 1935:1935 -p 8080:80 --rm alfg/nginx-rtmp:cuda
 ```
 
+**This image is experimental!*
+
 
 ## Resources
 * https://alpinelinux.org/
