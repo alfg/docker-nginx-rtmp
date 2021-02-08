@@ -113,9 +113,20 @@ ffmpeg version 4.3.1 Copyright (c) 2000-2020 the FFmpeg developers
     --extra-libs='-lpthread -lm'
 ```
 
+
+### FFmpeg Hardware Acceleration
+A `Dockerfile.cuda` image is available to enable FFmpeg hardware acceleration via the [NVIDIA's CUDA](https://trac.ffmpeg.org/wiki/HWAccelIntro#CUDANVENCNVDEC).
+
+Use the tag: `alfg/nginx-rtmp:cuda`:
+```
+docker run -it -p 1935:1935 -p 8080:80 --rm alfg/nginx-rtmp:cuda
+```
+
+
 ## Resources
 * https://alpinelinux.org/
 * http://nginx.org
 * https://github.com/arut/nginx-rtmp-module
 * https://www.ffmpeg.org
+* https://trac.ffmpeg.org/wiki/HWAccelIntro#CUDANVENCNVDEC
 * https://obsproject.com
