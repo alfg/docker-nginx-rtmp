@@ -53,7 +53,9 @@ RUN cd /tmp/nginx-${NGINX_VERSION} && \
 
 ###############################
 # Build the FFmpeg-build image.
-FROM nvidia/cuda:10.2-devel-ubuntu18.04 as build-ffmpeg
+FROM nvidia/cuda:11.1-devel-ubuntu20.04 as build-ffmpeg
+
+ENV DEBIAN_FRONTEND=noninteractive
 ARG FFMPEG_VERSION
 ARG PREFIX=/usr/local
 ARG MAKEFLAGS="-j4"
@@ -105,25 +107,16 @@ RUN cd /tmp/ffmpeg-${FFMPEG_VERSION} && \
   --enable-gpl \
   --enable-nonfree \
   --enable-small \
-  --enable-libmp3lame \
-  --enable-libx264 \
-  --enable-libx265 \
-  --enable-libvpx \
-  --enable-libtheora \
-  --enable-libvorbis \
-  --enable-libopus \
   --enable-libfdk-aac \
-  --enable-libass \
-  --enable-libwebp \
-  --enable-postproc \
-  --enable-avresample \
-  --enable-libfreetype \
   --enable-openssl \
+  --enable-libnpp \
+  --enable-cuda \
+  --enable-cuvid \
+  --enable-nvenc \
+  --enable-libnpp \
   --disable-debug \
   --disable-doc \
   --disable-ffplay \
-  --enable-cuda-nvcc \
-  --enable-libnpp \
   --extra-cflags=-I/usr/local/cuda/include \
   --extra-ldflags=-L/usr/local/cuda/lib64 \
   --extra-libs="-lpthread -lm" && \
@@ -134,42 +127,38 @@ RUN rm -rf /var/cache/* /tmp/*
 
 ##########################
 # Build the release image.
-FROM nvidia/cuda:10.2-runtime-ubuntu18.04
-LABEL MAINTAINER Haned Bahadorzadeh <h.bahadorzadeh@gmail.com>
+FROM nvidia/cuda:11.1-runtime-ubuntu20.04
+LABEL MAINTAINER Alfred Gutierrez <alf.g.jr@gmail.com>
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV NVIDIA_DRIVER_VERSION=455
+ENV NVIDIA_VISIBLE_DEVICES all
+ENV NVIDIA_DRIVER_CAPABILITIES compute,video,utility
 
 # Set default ports.
 ENV HTTP_PORT 80
 ENV HTTPS_PORT 443
 ENV RTMP_PORT 1935
 
-RUN apt update && apt install -y \
+RUN apt update && apt install -y --no-install-recommends \
   ca-certificates \
-  gettext \
-  openssl \
-  libpcre3 \
-  lame \
-  libogg0 \
-  libx264-152 \
-  libx265-146 \
   curl \
-  libass9 \
-  libvpx5 \
-  libvorbis0a \
-  libwebp6 \
+  gettext \
+  libpcre3-dev \
+  libnvidia-decode-${NVIDIA_DRIVER_VERSION} \
+  libnvidia-encode-${NVIDIA_DRIVER_VERSION} \
   libtheora0 \
-  libopus0 \
+  openssl \
   rtmpdump
 
 COPY --from=build-nginx /usr/local/nginx /usr/local/nginx
 COPY --from=build-nginx /etc/nginx /etc/nginx
 COPY --from=build-ffmpeg /usr/local /usr/local
-COPY --from=build-ffmpeg /usr/lib/x86_64-linux-gnu/libfdk-aac.so /usr/lib/x86_64-linux-gnu/libfdk-aac.so
+COPY --from=build-ffmpeg /usr/lib/x86_64-linux-gnu/libfdk-aac.so.1 /usr/lib/x86_64-linux-gnu/libfdk-aac.so.1
 
 # Add NGINX path, config and static files.
 ENV PATH "${PATH}:/usr/local/nginx/sbin"
-ENV HW_ACCEL "-hwaccel cuda -hwaccel_output_format cuda"
-ADD nginx.conf /etc/nginx/nginx.conf.template
-RUN sed -i "s/ffmpeg/ffmpeg ${HW_ACCEL}/g" /etc/nginx/nginx.conf.template
+ADD nginx-cuda.conf /etc/nginx/nginx.conf.template
 RUN mkdir -p /opt/data && mkdir /www
 ADD static /www/static
 
