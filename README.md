@@ -30,7 +30,7 @@ docker run -it -p 1935:1935 -p 8080:80 --rm nginx-rtmp
 
 * Stream live content to:
 ```
-rtmp://<server ip>:1935/stream/$STREAM_NAME
+rtmp://localhost:1935/stream/$STREAM_NAME
 ```
 
 ### SSL 
@@ -64,10 +64,10 @@ volumes:
 ### Watch Stream
 * In Safari, VLC or any HLS player, open:
 ```
-http://<server ip>:8080/live/$STREAM_NAME.m3u8
+http://localhost:8080/live/$STREAM_NAME.m3u8
 ```
 * Example Playlist: `http://localhost:8080/live/hello.m3u8`
-* [VideoJS Player](https://hls-js.netlify.app/demo/?src=http%3A%2F%2Flocalhost%3A8080%2Flive%2Fhello.m3u8)
+* [HLS.js Player](https://hls-js.netlify.app/demo/?src=http%3A%2F%2Flocalhost%3A8080%2Flive%2Fhello.m3u8)
 * FFplay: `ffplay -fflags nobuffer rtmp://localhost:1935/stream/hello`
 
 ### FFmpeg Build
@@ -122,11 +122,17 @@ Use the tag: `alfg/nginx-rtmp:cuda`:
 docker run -it -p 1935:1935 -p 8080:80 --rm alfg/nginx-rtmp:cuda
 ```
 
+You must have a supported platform and driver to run this image.
+
+* https://github.com/NVIDIA/nvidia-docker
+* https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker
+* https://docs.docker.com/docker-for-windows/wsl/
+* https://trac.ffmpeg.org/wiki/HWAccelIntro#CUDANVENCNVDEC
+
 
 ## Resources
 * https://alpinelinux.org/
 * http://nginx.org
 * https://github.com/arut/nginx-rtmp-module
 * https://www.ffmpeg.org
-* https://trac.ffmpeg.org/wiki/HWAccelIntro#CUDANVENCNVDEC
 * https://obsproject.com
