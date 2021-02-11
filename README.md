@@ -129,6 +129,7 @@ You must have a supported platform and driver to run this image.
 * https://docs.docker.com/docker-for-windows/wsl/
 * https://trac.ffmpeg.org/wiki/HWAccelIntro#CUDANVENCNVDEC
 
+**This image is experimental!*
 
 ## Resources
 * https://alpinelinux.org/
