@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>hls.js Player</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        .video-wrapper {
+            padding-top: 20px;
+            height: 80%;
+            margin: 0 auto;
+        }
+
+        video {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+        <h1>hls.js player</h1>
+        <a href="https://github.com/video-dev/hls.js">github.com/video-dev/hls.js</a>
+        <div class="video-wrapper">
+            <video id="video" controls muted></video>
+        </div>
+    </div>
+
+    <script>
+    var params = new URLSearchParams(window.location.search);
+    var url = params.get('url');
+    if (Hls.isSupported()) {
+        var video = document.getElementById('video');
+        var hls = new Hls();
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+            hls.loadSource(url);
+            hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+                video.play();
+            });
+        });
+    }
+    </script>
+  </body>
+</html>

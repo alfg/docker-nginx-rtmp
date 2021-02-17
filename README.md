@@ -62,7 +62,10 @@ volumes:
 * Stream Key: `hello`
 
 ### Watch Stream
-* In Safari, VLC or any HLS player, open:
+* Load up the example hls.js player in your browser:
+http://localhost:8080/player/?url=http://localhost:8080/live/hello.m3u8
+
+* Or in Safari, VLC or any HLS player, open:
 ```
 http://localhost:8080/live/$STREAM_NAME.m3u8
 ```
