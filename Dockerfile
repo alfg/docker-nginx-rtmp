@@ -54,7 +54,7 @@ RUN cd /tmp/nginx-${NGINX_VERSION} && \
 
 ###############################
 # Build the FFmpeg-build image.
-FROM alpine:3.11 as build-ffmpeg
+FROM alpine:3.13 as build-ffmpeg
 ARG FFMPEG_VERSION
 ARG PREFIX=/usr/local
 ARG MAKEFLAGS="-j4"
@@ -123,7 +123,7 @@ RUN rm -rf /var/cache/* /tmp/*
 
 ##########################
 # Build the release image.
-FROM alpine:3.11
+FROM alpine:3.13
 LABEL MAINTAINER Alfred Gutierrez <alf.g.jr@gmail.com>
 
 # Set default ports.
