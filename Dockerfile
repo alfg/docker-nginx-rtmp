@@ -1,11 +1,11 @@
-ARG NGINX_VERSION=1.18.0
-ARG NGINX_RTMP_VERSION=1.2.1
-ARG FFMPEG_VERSION=4.3.1
+ARG NGINX_VERSION=1.20.0
+ARG NGINX_RTMP_VERSION=1.2.9
+ARG FFMPEG_VERSION=4.3.2
 
 
 ##############################
 # Build the NGINX-build image.
-FROM alpine:3.11 as build-nginx
+FROM alpine:3.12 as build-nginx
 ARG NGINX_VERSION
 ARG NGINX_RTMP_VERSION
 
@@ -43,7 +43,7 @@ RUN cd /tmp && \
 RUN cd /tmp/nginx-${NGINX_VERSION} && \
   ./configure \
   --prefix=/usr/local/nginx \
-  --add-module=/tmp/nginx-rtmp-module-${NGINX_RTMP_VERSION} \
+  --add-module=/tmp/nginx-http-flv-module-${NGINX_RTMP_VERSION} \
   --conf-path=/etc/nginx/nginx.conf \
   --with-threads \
   --with-file-aio \
@@ -54,7 +54,7 @@ RUN cd /tmp/nginx-${NGINX_VERSION} && \
 
 ###############################
 # Build the FFmpeg-build image.
-FROM alpine:3.11 as build-ffmpeg
+FROM alpine:3.12 as build-ffmpeg
 ARG FFMPEG_VERSION
 ARG PREFIX=/usr/local
 ARG MAKEFLAGS="-j4"
@@ -124,8 +124,8 @@ RUN rm -rf /var/cache/* /tmp/*
 
 ##########################
 # Build the release image.
-FROM alpine:3.11
-LABEL MAINTAINER Alfred Gutierrez <alf.g.jr@gmail.com>
+FROM alpine:3.12
+LABEL MAINTAINER=rikugun
 
 # Set default ports.
 ENV HTTP_PORT 80
