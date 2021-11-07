@@ -27,6 +27,7 @@ RUN apk add --update \
   pcre-dev \
   pkgconf \
   pkgconfig \
+  ffmpeg \
   zlib-dev
 
 # Get nginx source.
