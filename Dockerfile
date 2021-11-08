@@ -89,6 +89,18 @@ RUN apk add --update \
 RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories
 RUN apk add --update fdk-aac-dev
 
+RUN apk update && \
+    apk upgrade && \
+
+    apk add --update ca-certificates && \
+
+    apk add gnutls-dev zlib-dev yasm-dev lame-dev libogg-dev \
+    x264-dev libvpx-dev libvorbis-dev x265-dev freetype-dev \
+    libass-dev libwebp-dev rtmpdump-dev libtheora-dev opus-dev && \
+
+    apk add --no-cache --virtual .build-dependencies \
+    build-base coreutils tar bzip2 x264 gnutls nasm
+
 # Get FFmpeg source.
 RUN cd /tmp/ && \
   wget http://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.gz && \
@@ -120,10 +132,16 @@ RUN cd /tmp/ffmpeg-${FFMPEG_VERSION} && \
   --disable-doc \
   --disable-ffplay \
   --extra-libs="-lpthread -lm" && \
-  make && make install && make distclean
+  make && make install && make distclean && \
+  cd $OLDPWD 
 
 # Cleanup.
 RUN rm -rf /var/cache/* /tmp/*
+
+# Cleanup
+RUN rm -rf /tmp/ffmpeg-${FFMPEG_VERSION} && \
+apk del --purge .build-dependencies && \
+rm -rf /var/cache/apk/*
 
 ##########################
 # Build the release image.
