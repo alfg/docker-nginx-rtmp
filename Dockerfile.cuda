@@ -7,9 +7,10 @@ ARG FFMPEG_VERSION=5.0
 FROM ubuntu:18.04 as build-nginx
 ARG NGINX_VERSION
 ARG NGINX_RTMP_VERSION
+ARG MAKEFLAGS="-j4"
 
 # Build dependencies.
-RUN apt update && apt install -y \
+RUN apt update && apt install -y --no-install-recommends\
   build-essential \
   cmake \
   ca-certificates \
@@ -24,21 +25,24 @@ RUN apt update && apt install -y \
   libpcre3-dev \
   pkg-config \
   zlib1g-dev \
-  wget
+  wget && \
+  rm -rf /var/lib/apt/lists/*
+
+WORKDIR /tmp
 
 # Get nginx source.
-RUN cd /tmp && \
-  wget https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
+RUN wget https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
   tar zxf nginx-${NGINX_VERSION}.tar.gz && \
   rm nginx-${NGINX_VERSION}.tar.gz
 
 # Get nginx-rtmp module.
-RUN cd /tmp && \
-  wget https://github.com/arut/nginx-rtmp-module/archive/v${NGINX_RTMP_VERSION}.tar.gz && \
-  tar zxf v${NGINX_RTMP_VERSION}.tar.gz && rm v${NGINX_RTMP_VERSION}.tar.gz
+RUN wget https://github.com/arut/nginx-rtmp-module/archive/v${NGINX_RTMP_VERSION}.tar.gz && \
+  tar zxf v${NGINX_RTMP_VERSION}.tar.gz && \
+  rm v${NGINX_RTMP_VERSION}.tar.gz
 
 # Compile nginx with nginx-rtmp module.
-RUN cd /tmp/nginx-${NGINX_VERSION} && \
+WORKDIR /tmp/nginx-${NGINX_VERSION}
+RUN \
   ./configure \
   --prefix=/usr/local/nginx \
   --add-module=/tmp/nginx-rtmp-module-${NGINX_RTMP_VERSION} \
@@ -49,7 +53,8 @@ RUN cd /tmp/nginx-${NGINX_VERSION} && \
   --with-debug \
   --with-http_stub_status_module \
   --with-cc-opt="-Wimplicit-fallthrough=0" && \
-  cd /tmp/nginx-${NGINX_VERSION} && make && make install
+  make && \
+  make install
 
 ###############################
 # Build the FFmpeg-build image.
@@ -61,7 +66,7 @@ ARG PREFIX=/usr/local
 ARG MAKEFLAGS="-j4"
 
 # FFmpeg build dependencies.
-RUN apt update && apt install -y \
+RUN apt update && apt install -y --no-install-recommends \
   build-essential \
   coreutils \
   cmake \
@@ -88,19 +93,25 @@ RUN apt update && apt install -y \
   pkg-config \
   wget \
   yasm \
-  git
+  git \
+  ca-certificates && \
+  rm -rf /var/lib/apt/lists/*
+
+WORKDIR /tmp
 
 # Clone and install ffnvcodec
-RUN cd /tmp && git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git && \
-  cd nv-codec-headers && make install
+RUN git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git && \
+  cd nv-codec-headers && \
+  make install
 
 # Get FFmpeg source.
-RUN cd /tmp/ && \
-  wget http://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.gz && \
-  tar zxf ffmpeg-${FFMPEG_VERSION}.tar.gz && rm ffmpeg-${FFMPEG_VERSION}.tar.gz
+RUN wget http://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.gz && \
+  tar zxf ffmpeg-${FFMPEG_VERSION}.tar.gz && \
+  rm ffmpeg-${FFMPEG_VERSION}.tar.gz
 
 # Compile ffmpeg.
-RUN cd /tmp/ffmpeg-${FFMPEG_VERSION} && \
+WORKDIR /tmp/ffmpeg-${FFMPEG_VERSION}
+RUN \
   ./configure \
   --prefix=${PREFIX} \
   --enable-version3 \
@@ -120,7 +131,9 @@ RUN cd /tmp/ffmpeg-${FFMPEG_VERSION} && \
   --extra-cflags=-I/usr/local/cuda/include \
   --extra-ldflags=-L/usr/local/cuda/lib64 \
   --extra-libs="-lpthread -lm" && \
-  make && make install && make distclean
+  make && \
+  make install && \
+  make distclean
 
 # Cleanup.
 RUN rm -rf /var/cache/* /tmp/*
@@ -154,7 +167,8 @@ RUN apt update && apt install -y --no-install-recommends \
   libnvidia-encode-${NVIDIA_DRIVER_VERSION} \
   libtheora0 \
   openssl \
-  rtmpdump
+  rtmpdump && \
+  rm -rf /var/lib/apt/lists/*
 
 COPY --from=build-nginx /usr/local/nginx /usr/local/nginx
 COPY --from=build-nginx /etc/nginx /etc/nginx
@@ -164,12 +178,12 @@ COPY --from=build-ffmpeg /usr/lib/x86_64-linux-gnu/libfdk-aac.so.1 /usr/lib/x86_
 # Add NGINX path, config and static files.
 ENV PATH "${PATH}:/usr/local/nginx/sbin"
 RUN mkdir -p /opt/data && mkdir /www
-ADD nginx-cuda.conf /etc/nginx/nginx.conf.template
-ADD entrypoint.cuda.sh /opt/entrypoint.sh
+COPY nginx-cuda.conf /etc/nginx/nginx.conf.template
+COPY entrypoint.cuda.sh /opt/entrypoint.sh
 RUN chmod gu+x /opt/entrypoint.sh
-ADD static /www/static
+COPY static /www/static
 
 EXPOSE 1935
 EXPOSE 80
 
-CMD /opt/entrypoint.sh
+ENTRYPOINT ["/opt/entrypoint.sh"]
