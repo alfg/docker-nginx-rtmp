@@ -20,7 +20,7 @@ jobs:
       
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@e5622373a38e60fb6d795a4421e56882f2d7a681
+        uses: docker/metadata-action@69f6fc9d46f2f8bf0d5491e4aabe0bb8c6a4678a
         with:
           images: alfg/nginx-rtmp
       
