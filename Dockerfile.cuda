@@ -4,7 +4,7 @@ ARG FFMPEG_VERSION=5.0
 
 ##############################
 # Build the NGINX-build image.
-FROM ubuntu:20.04 as build-nginx
+FROM ubuntu:22.04 as build-nginx
 ARG NGINX_VERSION
 ARG NGINX_RTMP_VERSION
 ARG MAKEFLAGS="-j4"
