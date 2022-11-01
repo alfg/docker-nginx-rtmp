@@ -25,7 +25,7 @@ jobs:
           images: alfg/nginx-rtmp
       
       - name: Build and push Docker image
-        uses: docker/build-push-action@1cb9d22b932e4832bb29793b7777ec860fc1cde0
+        uses: docker/build-push-action@c56af957549030174b10d6867f20e78cfd7debc5
         with:
           context: .
           push: true
