@@ -177,7 +177,7 @@ COPY --from=build-ffmpeg /usr/lib/x86_64-linux-gnu/libfdk-aac.so.1 /usr/lib/x86_
 
 # Add NGINX path, config and static files.
 ENV PATH "${PATH}:/usr/local/nginx/sbin"
-RUN mkdir -p /opt/data && mkdir /www
+RUN mkdir -p /opt/data/thumb && mkdir /www
 COPY nginx-cuda.conf /etc/nginx/nginx.conf.template
 COPY entrypoint.cuda.sh /opt/entrypoint.sh
 RUN chmod gu+x /opt/entrypoint.sh
