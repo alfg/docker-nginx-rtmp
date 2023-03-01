@@ -58,7 +58,7 @@ RUN \
 
 ###############################
 # Build the FFmpeg-build image.
-FROM nvidia/cuda:11.7.0-devel-ubuntu20.04 as build-ffmpeg
+FROM nvidia/cuda:12.0.1-devel-ubuntu20.04 as build-ffmpeg
 
 ENV DEBIAN_FRONTEND=noninteractive
 ARG FFMPEG_VERSION
@@ -140,7 +140,7 @@ RUN rm -rf /var/cache/* /tmp/*
 
 ##########################
 # Build the release image.
-FROM nvidia/cuda:11.7.0-devel-ubuntu20.04
+FROM nvidia/cuda:12.0.1-devel-ubuntu20.04
 LABEL MAINTAINER Alfred Gutierrez <alf.g.jr@gmail.com>
 
 ENV DEBIAN_FRONTEND=noninteractive
